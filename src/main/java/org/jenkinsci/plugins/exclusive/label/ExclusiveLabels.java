@@ -54,13 +54,15 @@ public class ExclusiveLabels extends QueueTaskDispatcher implements Describable<
     
     public CauseOfBlockage canTake(Node node, BuildableItem item) {
         Label assignedLabel = item.task.getAssignedLabel();
-        if(!assignedLabel.contains(node))
+        if(assignedLabel!=null && !assignedLabel.contains(node))
             return null;
         boolean containsExclusive = false;
         final List<LabelAtom> exclusives = new ArrayList<LabelAtom>();
         for(LabelAtom atom : node.getAssignedLabels()){
             if(getExclusiveLabels().contains(atom)){
                exclusives.add(atom);
+               if(assignedLabel==null)
+                   return new NotExclusiveLabel(node);
                if(!containsExclusive)
                    containsExclusive=assignedLabel.getName().contains(atom.getName());
             }           
