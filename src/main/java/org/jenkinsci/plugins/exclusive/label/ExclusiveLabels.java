@@ -45,7 +45,7 @@ import org.kohsuke.stapler.StaplerRequest;
  * @author lucinka
  */
 @Extension
-public class ExclusiveLabels extends QueueTaskDispatcher implements Describable<ExclusiveLabels>{
+public class ExclusiveLabels extends QueueTaskDispatcher implements Describable<ExclusiveLabels> {
     
     
     public List<LabelAtom> getExclusiveLabels(){
@@ -84,7 +84,7 @@ public class ExclusiveLabels extends QueueTaskDispatcher implements Describable<
         return Jenkins.getInstance().getDescriptorOrDie(this.getClass());
     }
     
-    public class NotExclusiveLabel extends CauseOfBlockage{
+    public static class NotExclusiveLabel extends CauseOfBlockage{
         private Node node;
         
         public NotExclusiveLabel(Node node){
