@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -11,9 +12,9 @@
   <artifactId>exclusive-label-plugin</artifactId>
   <version>${changelist}</version>
   <packaging>hpi</packaging>
-  <description>Enable mark which labels are exlusive</description>
   <name>Exclusive label plugin</name>
-  <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+  <description>Enable mark which labels are exlusive</description>
+  <url>https://github.com/jenkinsci/exclusive-labels-plugin</url>
 
   <licenses>
     <license>
@@ -22,6 +23,13 @@
     </license>
   </licenses>
 
+  <scm>
+    <connection>scm:git:git@github.com:${gitHubRepo}.git</connection>
+    <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+    <tag>${scmTag}</tag>
+    <url>https://github.com/${gitHubRepo}</url>
+  </scm>
+
   <properties>
     <changelist>999999-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/exclusive-labels-plugin</gitHubRepo>
@@ -29,13 +37,13 @@
     <jenkins.baseline>2.516</jenkins.baseline>
     <jenkins.version>${jenkins.baseline}.3</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
-    <spotless.check.skip>true</spotless.check.skip>
+    <spotless.check.skip>false</spotless.check.skip>
     <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
     <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
     <hpi.bundledArtifacts />
     <hpi.strictBundledArtifacts>true</hpi.strictBundledArtifacts>
   </properties>
-  
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -47,6 +55,19 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.jenkins</groupId>
+      <artifactId>configuration-as-code</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jenkins.configuration-as-code</groupId>
+      <artifactId>test-harness</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <repositories>
     <repository>
@@ -60,11 +81,5 @@
       <url>https://repo.jenkins-ci.org/public/</url>
     </pluginRepository>
   </pluginRepositories>
-  
-  <scm>
-    <connection>scm:git:ssh://github.com/${gitHubRepo}.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/${gitHubRepo}.git</developerConnection>
-    <url>https://github.com/${gitHubRepo}</url>
-  <tag>${scmTag}</tag></scm>
-  
+
 </project>
