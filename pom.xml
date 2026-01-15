@@ -12,9 +12,15 @@
   <version>${changelist}</version>
   <packaging>hpi</packaging>
   <description>Enable mark which labels are exlusive</description>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/Exclusive+label+plugin</url>
   <name>Exclusive label plugin</name>
   <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
 
   <properties>
     <changelist>999999-SNAPSHOT</changelist>
