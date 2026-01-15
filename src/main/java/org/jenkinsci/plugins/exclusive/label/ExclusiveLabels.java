@@ -38,7 +38,9 @@ import java.util.List;
 import java.util.Set;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
-import org.kohsuke.stapler.StaplerRequest;
+import org.jenkinsci.Symbol;
+import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.StaplerRequest2;
 
 /**
  *
@@ -46,48 +48,46 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 @Extension
 public class ExclusiveLabels extends QueueTaskDispatcher implements Describable<ExclusiveLabels> {
-    
-    
-    public List<LabelAtom> getExclusiveLabels(){
-        return ((DescriptorImpl)getDescriptor()).getLabels();
+
+    public List<LabelAtom> getExclusiveLabels() {
+        return ((DescriptorImpl) getDescriptor()).getLabels();
     }
-    
+
+    public String getLabelsInString() {
+        return ((DescriptorImpl) getDescriptor()).getLabelsInString();
+    }
+
     public CauseOfBlockage canTake(Node node, BuildableItem item) {
         Label assignedLabel = item.task.getAssignedLabel();
-        if(assignedLabel!=null && !assignedLabel.contains(node))
-            return null;
+        if (assignedLabel != null && !assignedLabel.contains(node)) return null;
         boolean containsExclusive = false;
         final List<LabelAtom> exclusives = new ArrayList<LabelAtom>();
-        for(LabelAtom atom : node.getAssignedLabels()){
-            if(getExclusiveLabels().contains(atom)){
-               exclusives.add(atom);
-               if(assignedLabel==null)
-                   return new NotExclusiveLabel(node);
-               if(!containsExclusive)
-                   containsExclusive=assignedLabel.getName().contains(atom.getName());
-            }           
+        for (LabelAtom atom : node.getAssignedLabels()) {
+            if (getExclusiveLabels().contains(atom)) {
+                exclusives.add(atom);
+                if (assignedLabel == null) return new NotExclusiveLabel(node);
+                if (!containsExclusive)
+                    containsExclusive = assignedLabel.getName().contains(atom.getName());
+            }
         }
-        if(exclusives.size()<1)
-            return null;
-        if(!containsExclusive)
-            return new NotExclusiveLabel(node);
+        if (exclusives.size() < 1) return null;
+        if (!containsExclusive) return new NotExclusiveLabel(node);
         ExclusiveLabelVisitor visitor = new ExclusiveLabelVisitor();
         Set<LabelAtom> atoms = new HashSet<LabelAtom>();
         atoms.addAll(exclusives);
-       
-        if(!item.task.getAssignedLabel().accept(visitor, atoms))
-            return new NotExclusiveLabel(node);
+
+        if (!item.task.getAssignedLabel().accept(visitor, atoms)) return new NotExclusiveLabel(node);
         return null;
     }
 
     public Descriptor<ExclusiveLabels> getDescriptor() {
         return Jenkins.getInstance().getDescriptorOrDie(this.getClass());
     }
-    
-    public static class NotExclusiveLabel extends CauseOfBlockage{
+
+    public static class NotExclusiveLabel extends CauseOfBlockage {
         private Node node;
-        
-        public NotExclusiveLabel(Node node){
+
+        public NotExclusiveLabel(Node node) {
             this.node = node;
         }
 
@@ -95,36 +95,34 @@ public class ExclusiveLabels extends QueueTaskDispatcher implements Describable<
         public String getShortDescription() {
             return ("Node " + node.getDisplayName() + " has exclusive label(s)");
         }
-        
     }
 
     @Extension
-    public static class DescriptorImpl extends Descriptor<ExclusiveLabels>{
-        
-        private transient List<LabelAtom> exclusiveLabels = new ArrayList<LabelAtom>();
+    @Symbol("exclusiveLabels")
+    public static class DescriptorImpl extends Descriptor<ExclusiveLabels> {
+
         private String labelsInString;
-        
-        public DescriptorImpl(){
-            load();       
-            exclusiveLabels = parseLabels(labelsInString);
+
+        public DescriptorImpl() {
+            load();
         }
-        
-        public List<LabelAtom> getLabels(){
-            return exclusiveLabels;
-        }
-        
-        public static List<LabelAtom> parseLabels(String token){
+
+        public List<LabelAtom> getLabels() {
             List<LabelAtom> atomLabels = new ArrayList<LabelAtom>();
-            if(token==null || token.isEmpty())
-                return atomLabels;
-            String []labels = token.split(" ");
-            for(String label:labels){
+            if (labelsInString == null || labelsInString.isEmpty()) return atomLabels;
+            String[] labels = labelsInString.split(" ");
+            for (String label : labels) {
                 atomLabels.add(new LabelAtom(label));
             }
             return atomLabels;
         }
-        
-        public String getLabelsInString(){
+
+        @DataBoundSetter
+        public void setLabelsInString(String labelsInString) {
+            this.labelsInString = labelsInString;
+        }
+
+        public String getLabelsInString() {
             return labelsInString;
         }
 
@@ -132,16 +130,12 @@ public class ExclusiveLabels extends QueueTaskDispatcher implements Describable<
         public String getDisplayName() {
             return "Exclusive labels";
         }
-        
+
         @Override
-        public boolean configure(StaplerRequest req, JSONObject res){
-            labelsInString = req.getParameter("exclusiveLabels");
-            exclusiveLabels = parseLabels(labelsInString);
-            save();
+        public boolean configure(StaplerRequest2 req, JSONObject json) {
+            req.bindJSON(this, json);
+            this.save();
             return true;
-            
         }
-        
     }
-    
 }

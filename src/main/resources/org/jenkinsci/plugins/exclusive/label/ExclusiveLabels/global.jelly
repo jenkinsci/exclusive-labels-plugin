@@ -25,8 +25,8 @@ THE SOFTWARE.
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
  <f:section title="${descriptor.displayName}">
-   <f:entry title="Exclusive labels" field="exclusiveLabels">
-     <f:textbox name="exclusiveLabels" value="${descriptor.getLabelsInString()}"/>
+   <f:entry title="Exclusive labels" field="labelsInString">
+     <f:textbox name="labelsInString" value="${descriptor.getLabelsInString()}"/>
    </f:entry>
  </f:section>
 </j:jelly>
