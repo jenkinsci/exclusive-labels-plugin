@@ -19,6 +19,14 @@ Example: an agent has three labels linux, hibernate, ipv6 and ipv6 is exclusive 
 
 ![Queue screenshot](docs/queue.png)
 
+## Configuration as code
+
+```yaml
+unclassified:
+  exclusiveLabels:
+    labelsInString: 'exclusive1 exclusive2'
+```
+
 ## LICENSE
 
 Licensed under MIT, see [LICENSE](LICENSE.md)
